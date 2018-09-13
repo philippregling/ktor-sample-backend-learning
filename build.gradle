@@ -6,15 +6,24 @@ buildscript {
     ext.ktor_version = '0.9.4'
     ext.logback_version = "1.2.1"
     ext.kotlinx_coroutines_version = '0.23.4'
+    ext.shadow = "2.0.1"
+    ext.h2_version = '1.4.196'
+    ext.hikari = "3.2.0"
+    ext.exposed_version = '0.10.4'
+    ext.heimdall_hash = "1.5.1"
 
     repositories {
         mavenCentral()
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.github.jengelman.gradle.plugins:shadow:$shadow"
     }
 }
 
+apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'application'
@@ -37,10 +46,13 @@ repositories {
     mavenCentral()
     jcenter()
     maven { url "https://dl.bintray.com/kotlin/ktor" }
+    maven { url = "https://dl.bintray.com/kotlin/exposed" }
+    maven { url = "https://dl.bintray.com/kotlin/kotlinx" }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-io:$kotlinx_coroutines_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlinx_coroutines_version"
@@ -51,6 +63,11 @@ dependencies {
     compile "io.ktor:ktor-auth:$ktor_version"
     compile "io.ktor:ktor-auth-jwt:$ktor_version"
     compile "io.ktor:ktor-gson:$ktor_version"
+    compile "io.ktor:ktor-websockets:$ktor_version"
+    compile "com.h2database:h2:$h2_version"
+    compile "com.zaxxer:HikariCP:$hikari"
+    compile "org.jetbrains.exposed:exposed:0.10.4"
+    compile "de.qaware:heimdall:$heimdall_hash"
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
     testCompile "io.ktor:ktor-server-core:$ktor_version"
     testCompile "io.ktor:ktor-server-host-common:$ktor_version"
@@ -60,3 +77,9 @@ dependencies {
 }
 
 kotlin.experimental.coroutines = 'enable'
+
+shadowJar {
+    baseName = 'ktorsamplebackend'
+    classifier = null
+    version = null
+}
