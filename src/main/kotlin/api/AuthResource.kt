@@ -8,7 +8,7 @@ import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.route
-import main.kotlin.service.AuthService
+import main.kotlin.auth.AuthService
 import org.slf4j.LoggerFactory
 
 

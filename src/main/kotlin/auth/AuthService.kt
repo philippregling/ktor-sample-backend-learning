@@ -1,5 +1,4 @@
-package main.kotlin.service
-
+package main.kotlin.auth
 class AuthService {
 
 

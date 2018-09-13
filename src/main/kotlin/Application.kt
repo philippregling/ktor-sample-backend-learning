@@ -19,8 +19,8 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import main.kotlin.DatabaseFactory
 import main.kotlin.api.auth
+import main.kotlin.auth.AuthService
 import main.kotlin.model.SimpleJWT
-import main.kotlin.service.AuthService
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.DevelopmentEngine.main(args)
 
