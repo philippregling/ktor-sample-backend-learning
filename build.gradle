@@ -10,7 +10,6 @@ buildscript {
     ext.h2_version = '1.4.196'
     ext.hikari = "3.2.0"
     ext.exposed_version = '0.10.4'
-    ext.heimdall_hash = "1.5.1"
 
     repositories {
         mavenCentral()
@@ -64,10 +63,11 @@ dependencies {
     compile "io.ktor:ktor-auth-jwt:$ktor_version"
     compile "io.ktor:ktor-gson:$ktor_version"
     compile "io.ktor:ktor-websockets:$ktor_version"
+    compile "io.ktor:ktor-server-host-common:$ktor_version"
     compile "com.h2database:h2:$h2_version"
     compile "com.zaxxer:HikariCP:$hikari"
     compile "org.jetbrains.exposed:exposed:0.10.4"
-    compile "de.qaware:heimdall:$heimdall_hash"
+    compile group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
     testCompile "io.ktor:ktor-server-tests:$ktor_version"
     testCompile "io.ktor:ktor-server-core:$ktor_version"
     testCompile "io.ktor:ktor-server-host-common:$ktor_version"

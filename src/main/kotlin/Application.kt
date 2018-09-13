@@ -5,28 +5,35 @@ import io.ktor.auth.Authentication
 import io.ktor.auth.UserIdPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.request.forms.formData
-import io.ktor.features.CORS
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.StatusPages
+import io.ktor.features.*
 import io.ktor.gson.gson
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.request.path
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
+import io.ktor.server.engine.ShutDownUrl
 import main.kotlin.DatabaseFactory
 import main.kotlin.api.auth
 import main.kotlin.auth.AuthService
 import main.kotlin.model.SimpleJWT
+import org.slf4j.event.Level
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.DevelopmentEngine.main(args)
 
+val simpleJWT = SimpleJWT("my-super-secret-for-jwt")
+
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
-
+    install(DefaultHeaders)
+    install(CallLogging) {
+        level = Level.DEBUG
+        filter { call -> call.request.path().startsWith("/") }
+    }
     install(CORS) {
         method(HttpMethod.Options)
         method(HttpMethod.Get)
@@ -38,8 +45,13 @@ fun Application.module() {
         allowCredentials = true
         anyHost()
     }
+    install(ShutDownUrl.ApplicationCallFeature) {
+        // The URL that will be intercepted
+        shutDownUrl = "/shutdown"
+        // A function that will be executed to get the exit code of the process
+        exitCodeSupplier = { 0 } // ApplicationCall.() -> Int
+    }
 
-    val simpleJWT = SimpleJWT("my-super-secret-for-jwt")
     install(Authentication) {
         jwt {
             verifier(simpleJWT.verifier)
@@ -52,6 +64,7 @@ fun Application.module() {
     install(ContentNegotiation) {
         gson {
             setPrettyPrinting()
+            excludeFieldsWithoutExposeAnnotation()
         }
         formData {
 

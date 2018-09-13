@@ -1,18 +1,29 @@
 package main.kotlin.auth
+
+import main.kotlin.DatabaseFactory.dbQuery
+import main.kotlin.model.auth.User
+import main.kotlin.model.auth.Users
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import simpleJWT
+
 class AuthService {
 
 
-//    suspend fun getAllWidgets(): List<Widget> = dbQuery {
+    //    suspend fun getAllWidgets(): List<Widget> = dbQuery {
 //        Widgets.selectAll().map { toWidget(it) }
 //    }
 //
-//    suspend fun getWidget(id: Int): Widget? = dbQuery {
-//        Widgets.select {
-//            (Widgets.id eq id)
-//        }.mapNotNull { toWidget(it) }
-//                .singleOrNull()
-//    }
-//
+    suspend fun getUser(id: Int? = null, userName: String? = null): User? = dbQuery {
+        when {
+            id != null -> Users.select { (Users.id eq id) }.mapNotNull { toUser(it) }.singleOrNull()
+            userName != null -> Users.select { (Users.userName eq userName) }.mapNotNull { toUser(it) }.singleOrNull()
+            else -> null
+        }
+    }
+
+    //
 //    suspend fun updateWidget(widget: NewWidget): Widget? {
 //        val id = widget.id
 //        return if (id == null) {
@@ -31,20 +42,20 @@ class AuthService {
 //        }
 //    }
 //
-//    suspend fun addWidget(widget: NewWidget): Widget {
-//        var key = 0
-//        dbQuery {
-//            key = (Widgets.insert {
-//                it[name] = widget.name
-//                it[quantity] = widget.quantity
-//                it[dateUpdated] = System.currentTimeMillis()
-//            } get Widgets.id)!!
-//        }
-//        return getWidget(key)!!.also {
-//            onChange(ChangeType.CREATE, key, it)
-//        }
-//    }
-//
+    suspend fun addUser(username: String, password: String): User? {
+        val newToken = simpleJWT.sign(username)
+        var key = 0
+        dbQuery {
+            key = (Users.insert {
+                it[userName] = username
+                it[hash] = password
+                it[token] = newToken
+            } get Users.id)!!
+        }
+        return getUser(key)
+    }
+
+    //
 //    suspend fun deleteWidget(id: Int): Boolean {
 //        return dbQuery {
 //            Widgets.deleteWhere { Widgets.id eq id } > 0
@@ -53,12 +64,6 @@ class AuthService {
 //        }
 //    }
 //
-//    private fun toWidget(row: ResultRow): Widget =
-//            Widget(
-//                    id = row[Widgets.id],
-//                    name = row[Widgets.name],
-//                    quantity = row[Widgets.quantity],
-//                    dateUpdated = row[Widgets.dateUpdated]
-//            )
+    private fun toUser(row: ResultRow): User = User(id = row[Users.id], userName = row[Users.userName], passwordHash = row[Users.hash])
 
 }
