@@ -1,10 +1,4 @@
 /.idea
 /.gradle
-/build/classes
-/build/distributions
-/build/kotlin
-/build/resources
-/build/scripts
-/build/scriptsShadow
-/build/tmp
+/build
 /out

@@ -8,6 +8,9 @@ image: atlassian/default-image:2
 pipelines:
   default:
   - step:
+      script:
+      - bash gradlew clean shadowJar
+  - step:
       services:
       - docker
       script: # Modify the commands below to build your repository.
