@@ -2,7 +2,6 @@ import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
-import io.ktor.auth.UserIdPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.request.forms.formData
 import io.ktor.features.*
@@ -20,12 +19,11 @@ import io.ktor.server.engine.ShutDownUrl
 import main.kotlin.DatabaseFactory
 import main.kotlin.api.auth
 import main.kotlin.auth.AuthService
-import main.kotlin.model.SimpleJWT
+import main.kotlin.jwt.JwtConfig
 import org.slf4j.event.Level
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.DevelopmentEngine.main(args)
 
-val simpleJWT = SimpleJWT("my-super-secret-for-jwt")
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
@@ -34,6 +32,10 @@ fun Application.module() {
         level = Level.DEBUG
         filter { call -> call.request.path().startsWith("/") }
     }
+
+    DatabaseFactory.init()
+    val authService = AuthService()
+
     install(CORS) {
         method(HttpMethod.Options)
         method(HttpMethod.Get)
@@ -53,10 +55,11 @@ fun Application.module() {
     }
 
     install(Authentication) {
-        jwt {
-            verifier(simpleJWT.verifier)
+        jwt("jwt") {
+            verifier(JwtConfig.verifier)
+            realm = "ktor.io"
             validate {
-                UserIdPrincipal(it.payload.getClaim("name").asString())
+                authService.getUser(id = it.payload.getClaim("id").asInt())
             }
         }
     }
@@ -71,8 +74,7 @@ fun Application.module() {
         }
     }
 
-    DatabaseFactory.init()
-    val authService = AuthService()
+
 
     routing {
         auth(authService)

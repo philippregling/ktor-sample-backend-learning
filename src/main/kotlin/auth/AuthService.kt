@@ -6,7 +6,6 @@ import main.kotlin.model.auth.Users
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
-import simpleJWT
 
 class AuthService {
 
@@ -43,13 +42,11 @@ class AuthService {
 //    }
 //
     suspend fun addUser(username: String, password: String): User? {
-        val newToken = simpleJWT.sign(username)
         var key = 0
         dbQuery {
             key = (Users.insert {
                 it[userName] = username
                 it[hash] = password
-                it[token] = newToken
             } get Users.id)!!
         }
         return getUser(key)

@@ -11,11 +11,11 @@ import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.util.toMap
 import main.kotlin.auth.AuthService
+import main.kotlin.jwt.JwtConfig
 import main.kotlin.model.ServerError
 import main.kotlin.model.auth.AuthUser
 import org.mindrot.jbcrypt.BCrypt
 import org.slf4j.LoggerFactory
-import simpleJWT
 
 
 fun Route.auth(authService: AuthService) {
@@ -31,7 +31,7 @@ fun Route.auth(authService: AuthService) {
             if (username != null && password != null) {
                 val registeredUser = authService.addUser(username, hashed)
                 registeredUser?.let {
-                    call.respond(HttpStatusCode.Created, AuthUser(simpleJWT.sign(username), registeredUser))
+                    call.respond(HttpStatusCode.Created, AuthUser(JwtConfig.makeToken(registeredUser), registeredUser))
                     return@post
                 }
                 call.respond(HttpStatusCode.NotFound)
@@ -50,7 +50,7 @@ fun Route.auth(authService: AuthService) {
             if (matchingUser != null) {
                 val hashMatches = BCrypt.checkpw(password, matchingUser.passwordHash)
                 if (hashMatches) {
-                    call.respond(HttpStatusCode.OK, AuthUser(simpleJWT.sign(matchingUser.userName.toString()), matchingUser))
+                    call.respond(HttpStatusCode.OK, AuthUser(JwtConfig.makeToken(matchingUser), matchingUser))
                 } else {
                     call.respond(HttpStatusCode.BadRequest)
                 }
@@ -60,9 +60,9 @@ fun Route.auth(authService: AuthService) {
 
         }
 
-        authenticate {
+        authenticate("jwt") {
             get("/auth") {
-
+                call.respond("VALID TOKEN")
             }
         }
 
