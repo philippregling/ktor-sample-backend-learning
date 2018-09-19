@@ -11,8 +11,11 @@ Execute this command in the repository's root directory to run this sample:
 To build and run a docker image:
 
 ```bash
-gradlew build
+gradlew shadowJar
 docker build -t ktor-sample-backend .
+docker tag ktor-sample-backend philippregling/ktor-sample-backend
+docker push philippregling/ktor-sample-backend
+
 docker run -m512M --cpus 2 -it -p 8080:8080 --rm ktor-sample-backend
 ```
  
