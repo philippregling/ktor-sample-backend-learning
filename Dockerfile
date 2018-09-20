@@ -8,6 +8,8 @@ RUN chown -R $APPLICATION_USER /app
 
 USER $APPLICATION_USER
 
+RUN ./gradlew shadowJar --stacktrace
+
 COPY /build/libs/ktorsamplebackend.jar /app/ktorsamplebackend.jar
 WORKDIR /app
 
