@@ -15,12 +15,12 @@ pipelines:
       - docker
       script: # Modify the commands below to build your repository.
       # Set $DOCKER_HUB_USERNAME and $DOCKER_HUB_PASSWORD as environment variables in repository settings
-      - echo "$DOCKER_HUB_USERNAME $DOCKER_PASS"
+      - echo "$DOCKER_USERNAME $DOCKER_API_KEY"
       - export IMAGE_NAME=philippregling/ktor-sample-backend:$BITBUCKET_COMMIT
 
       # build the Docker image (this will use the Dockerfile in the root of the repo)
       - docker build -t $IMAGE_NAME .
       # authenticate with the Docker Hub registry
-      - docker login -u $DOCKER_HUB_USERNAME --password-stdin $DOCKER_PASS
+      - docker login -u $DOCKER_USERNAME:$DOCKER_API_KEY
       # push the new Docker image to the Docker registry
       - docker push $IMAGE_NAME
