@@ -23,3 +23,4 @@ pipelines:
       - docker login -u philippregling -p Mindcrack18
       # push the new Docker image to the Docker registry
       - docker push $IMAGE_NAME
+
