@@ -14,6 +14,7 @@ import io.ktor.request.path
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
+import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.server.engine.ShutDownUrl
 import main.kotlin.DatabaseFactory
@@ -77,23 +78,26 @@ fun Application.module() {
 
 
     routing {
-        auth(authService)
+        route("/api") {
+            auth(authService)
 
-        get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
-        }
-
-        install(StatusPages) {
-            exception<InvalidCredentialsException> { exception ->
-                call.respond(HttpStatusCode.Unauthorized, mapOf("OK" to false, "error" to (exception.message ?: "")))
-            }
-            exception<AuthenticationException> { cause ->
-                call.respond(HttpStatusCode.Unauthorized)
-            }
-            exception<AuthorizationException> { cause ->
-                call.respond(HttpStatusCode.Forbidden)
+            get("/") {
+                call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
             }
 
+            install(StatusPages) {
+                exception<InvalidCredentialsException> { exception ->
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("OK" to false, "error" to (exception.message
+                            ?: "")))
+                }
+                exception<AuthenticationException> { cause ->
+                    call.respond(HttpStatusCode.Unauthorized)
+                }
+                exception<AuthorizationException> { cause ->
+                    call.respond(HttpStatusCode.Forbidden)
+                }
+
+            }
         }
     }
 }
