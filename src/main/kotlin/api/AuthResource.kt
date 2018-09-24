@@ -66,34 +66,6 @@ fun Route.auth(authService: AuthService) {
             }
         }
 
-//        get("/") {
-//            call.respond(widgetService.getAllWidgets())
-//        }
-//
-//        get("/{id}") {
-//            val widget = widgetService.getWidget(call.parameters["id"]?.toInt()!!)
-//            if (widget == null) call.respond(HttpStatusCode.NotFound)
-//            else call.respond(widget)
-//        }
-//
-//        post("/") {
-//            val widget = call.receive<NewWidget>()
-//            call.respond(HttpStatusCode.Created, widgetService.addWidget(widget))
-//        }
-//
-//        put("/") {
-//            val widget = call.receive<NewWidget>()
-//            val updated = widgetService.updateWidget(widget)
-//            if(updated == null) call.respond(HttpStatusCode.NotFound)
-//            else call.respond(HttpStatusCode.OK, updated)
-//        }
-//
-//        delete("/{id}") {
-//            val removed = widgetService.deleteWidget(call.parameters["id"]?.toInt()!!)
-//            if (removed) call.respond(HttpStatusCode.OK)
-//            else call.respond(HttpStatusCode.NotFound)
-//        }
-
     }
 
 }
