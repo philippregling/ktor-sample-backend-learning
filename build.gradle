@@ -2,7 +2,7 @@ group 'ktrobackend'
 version '1.0'
 
 buildscript {
-    ext.kotlin_version = '1.2.61'
+    ext.kotlin_version = '1.2.71'
     ext.ktor_version = '0.9.4'
     ext.logback_version = "1.2.1"
     ext.kotlinx_coroutines_version = '0.23.4'
