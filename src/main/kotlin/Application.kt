@@ -1,6 +1,7 @@
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.application.log
 import io.ktor.auth.Authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
@@ -59,8 +60,9 @@ fun Application.module() {
     install(Authentication) {
         jwt("jwt") {
             verifier(JwtConfig.verifier)
-            realm = "ktor.io"
+            realm = JwtConfig.issuer
             validate {
+                log.debug(it.payload.toString())
                 if (it.payload.issuer.contains(realm)) JWTPrincipal(it.payload) else null
             }
         }

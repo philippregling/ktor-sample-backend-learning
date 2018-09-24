@@ -9,7 +9,7 @@ import java.util.*
 object JwtConfig {
 
     private const val secret = "zAP5MBA4B4Ijz0MZaS48"
-    private const val issuer = "ktor.io"
+    const val issuer = "ktor.io"
     private const val validityInMs = 36_000_00 * 10 // 10 hours
     private val algorithm = Algorithm.HMAC512(secret)
 
