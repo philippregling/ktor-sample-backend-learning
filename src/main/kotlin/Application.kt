@@ -2,6 +2,7 @@ import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
+import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.request.forms.formData
 import io.ktor.features.*
@@ -60,7 +61,7 @@ fun Application.module() {
             verifier(JwtConfig.verifier)
             realm = "ktor.io"
             validate {
-                authService.getUser(id = it.payload.getClaim("id").asInt())
+                if (it.payload.issuer.contains(realm)) JWTPrincipal(it.payload) else null
             }
         }
     }

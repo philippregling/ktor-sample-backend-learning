@@ -13,8 +13,8 @@ object JwtConfig {
     private const val validityInMs = 36_000_00 * 10 // 10 hours
     private val algorithm = Algorithm.HMAC512(secret)
 
-    val verifier: JWTVerifier = JWT
-            .require(algorithm)
+    val verifier: JWTVerifier =
+            JWT.require(algorithm)
             .withIssuer(issuer)
             .build()
 
