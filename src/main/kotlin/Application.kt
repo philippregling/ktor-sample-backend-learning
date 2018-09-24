@@ -23,6 +23,7 @@ import main.kotlin.DatabaseFactory
 import main.kotlin.api.auth
 import main.kotlin.auth.AuthService
 import main.kotlin.jwt.JwtConfig
+import org.jetbrains.exposed.sql.exposedLogger
 import org.slf4j.event.Level
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.DevelopmentEngine.main(args)
@@ -60,9 +61,12 @@ fun Application.module() {
     install(Authentication) {
         jwt("jwt") {
             verifier(JwtConfig.verifier)
+            log.debug("VERIFY")
+            exposedLogger.debug("VERIFY")
             realm = JwtConfig.issuer
             validate {
                 log.debug(it.payload.toString())
+                exposedLogger.debug(it.payload.toString())
                 if (it.payload.issuer.contains(realm)) JWTPrincipal(it.payload) else null
             }
         }

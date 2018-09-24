@@ -12,6 +12,7 @@ import io.ktor.routing.route
 import io.ktor.util.toMap
 import main.kotlin.auth.AuthService
 import main.kotlin.jwt.JwtConfig
+import main.kotlin.model.Message
 import main.kotlin.model.ServerError
 import main.kotlin.model.auth.AuthUser
 import org.mindrot.jbcrypt.BCrypt
@@ -62,7 +63,7 @@ fun Route.auth(authService: AuthService) {
 
         authenticate("jwt") {
             get("/auth") {
-                call.respond("VALID TOKEN")
+                call.respond(Message("VALID TOKEN"))
             }
         }
 
